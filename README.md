@@ -1,6 +1,6 @@
 # numbers
 
-**Numbers** is a minimalist web app for generating lottery-style number sets.
+**Numbers** is a minimalist web app for generating lottery number sets.
 
 ---
 
@@ -22,4 +22,3 @@
   - Mobile-friendly, lightweight, and no dependencies.
 - ✅ **Open Source & Portable**
   - No build step. Just open `index.html` in a browser.
-  
