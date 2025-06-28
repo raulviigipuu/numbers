@@ -1,0 +1,8 @@
+# Sensitive credentials
+.env
+upload_map.json
+
+# Virtual env, caches
+.venv/
+__pycache__/
+*.pyc
