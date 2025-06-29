@@ -39,11 +39,6 @@ button {
   cursor: pointer;
 }
 
-.form-group {
-  margin-bottom: 1rem;
-  font-size: 1rem;
-}
-
 .flash-container {
   margin: 1rem 0;
   font-size: 0.95rem;
@@ -73,4 +68,50 @@ button {
   margin-top: 1rem;
   font-size: 0.95rem;
   color: #666;
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem;
+    margin: 1rem;
+  }
+
+  input[type="number"],
+  button {
+    width: 100%;
+    font-size: 1.1rem;
+  }
+
+  button {
+    padding: 1rem;
+  }
+
+  .flash-container,
+  .settings-summary {
+    word-wrap: break-word;
+  }
+
+  p#numbersLabel {
+    font-size: 2rem;
+  }
+
+  p#additionalNumbersLabel {
+    font-size: 1.25rem;
+  }
+}
+
+.form-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.form-table td {
+  padding: 0.5rem;
+  vertical-align: middle;
+}
+
+.form-table input[type="number"] {
+  width: 4.5rem;
+  padding: 0.5rem;
 }
