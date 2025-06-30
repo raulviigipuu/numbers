@@ -12,7 +12,8 @@ const SETTINGS = {
   BONUS_COUNT: 1,
   ODD_COUNT: 3,
   EVEN_COUNT: 3,
-  FLASH_TIMEOUT_MS: 7000
+  FLASH_TIMEOUT_MS: 7000,
+  MAX_ATTEMPTS: 5000
 };
 
 // =========================
@@ -117,7 +118,7 @@ function generateMainNumbers() {
 
   const result = [];
   let attempts = 0;
-  const maxAttempts = 5000;
+  const maxAttempts = SETTINGS.MAX_ATTEMPTS;
 
   while (result.length < SETTINGS.MAIN_COUNT && attempts < maxAttempts) {
     const num = generateRandom(SETTINGS.MAIN_TOTAL);
