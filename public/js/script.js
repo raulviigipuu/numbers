@@ -12,6 +12,7 @@ const SETTINGS = {
   BONUS_COUNT: 1,
   ODD_COUNT: 3,
   EVEN_COUNT: 3,
+  FLASH_TIMEOUT_MS: 7000
 };
 
 // =========================
@@ -24,6 +25,7 @@ function cacheDOM() {
     numbersLabel: document.getElementById("numbersLabel"),
     additionalNumbersLabel: document.getElementById("additionalNumbersLabel"),
     generateButton: document.getElementById("generateButton"),
+    resetButton: document.getElementById("resetButton"),
     noConsecutiveCheckbox: document.getElementById("noConsecutiveNumbersCheckbox"),
     oddEvenCheckbox: document.getElementById("enforceOddEvenCheckbox"),
     mainCountInput: document.getElementById("mainCountInput"),
@@ -48,13 +50,20 @@ function isConsecutive(num, set) {
   return set.includes(num - 1) || set.includes(num + 1);
 }
 
-function showFlash(msg, type = "info") {
-  if (!elements.flashContainer) return;
-  elements.flashContainer.innerHTML = "";
+function showFlash(msg, type = "info", timeout = SETTINGS.FLASH_TIMEOUT_MS) {
+  if (!elements.flashContainer) return
+
   const div = document.createElement("div");
   div.className = `flash ${type}`;
   div.textContent = msg;
+
   elements.flashContainer.appendChild(div);
+
+  // Auto-remove after timeout
+  setTimeout(() => {
+    div.classList.add("removing");
+    setTimeout(() => div.remove(), 1000); // match transition
+  }, timeout);
 }
 
 function updateSummary() {
@@ -66,6 +75,19 @@ function updateSummary() {
   ].filter(Boolean);
 
   elements.settingsSummary.innerText = parts.join(", ");
+}
+
+function resetFormToDefaults() {
+  elements.mainTotalInput.value = 48;
+  elements.mainCountInput.value = 6;
+  elements.bonusTotalInput.value = 5;
+  elements.bonusCountInput.value = 1;
+  elements.oddEvenCheckbox.checked = true;
+  elements.noConsecutiveCheckbox.checked = true;
+  elements.numbersLabel.innerText = "";
+  elements.additionalNumbersLabel.innerText = "";
+  elements.flashContainer.innerHTML = "";
+  updateSummary();
 }
 
 // =========================
@@ -132,58 +154,52 @@ function generateBonusNumbers() {
 function sanitizeInputs() {
   elements.flashContainer.innerHTML = "";
 
-  let mainTotal = parseInt(elements.mainTotalInput.value, 10);
-  if (isNaN(mainTotal) || mainTotal <= 0) {
-    mainTotal = 48;
-    elements.mainTotalInput.value = 48;
-    showFlash("⚠️ Invalid main range. Defaulting to 48.", "warning");
-  }
-  SETTINGS.MAIN_TOTAL = mainTotal;
+  SETTINGS.MAIN_TOTAL = parseAndValidateInput(elements.mainTotalInput, 48, 1, Infinity, "main range");
+  SETTINGS.MAIN_COUNT = parseAndValidateInput(elements.mainCountInput, 6, 1, SETTINGS.MAIN_TOTAL, "main numbers");
+  SETTINGS.BONUS_TOTAL = parseAndValidateInput(elements.bonusTotalInput, 5, 1, Infinity, "bonus range");
+  SETTINGS.BONUS_COUNT = parseAndValidateInput(elements.bonusCountInput, 1, 0, SETTINGS.BONUS_TOTAL, "bonus numbers");
 
-  let mainCount = parseInt(elements.mainCountInput.value, 10);
-  if (isNaN(mainCount) || mainCount <= 0) {
-    mainCount = 6;
-    elements.mainCountInput.value = 6;
-    showFlash("⚠️ Invalid number entered. Defaulting to 6.");
-  } else if (mainCount > mainTotal) {
-    mainCount = mainTotal;
-    elements.mainCountInput.value = mainTotal;
-    showFlash(`⚠️ Too many numbers requested. Limited to ${mainTotal}.`, "warning");
-  }
-  SETTINGS.MAIN_COUNT = mainCount;
+  SETTINGS.ODD_COUNT = Math.floor(SETTINGS.MAIN_COUNT / 2);
+  SETTINGS.EVEN_COUNT = SETTINGS.MAIN_COUNT - SETTINGS.ODD_COUNT;
 
-  let bonusTotal = parseInt(elements.bonusTotalInput.value, 10);
-  if (isNaN(bonusTotal) || bonusTotal <= 0) {
-    bonusTotal = 5;
-    elements.bonusTotalInput.value = 5;
-    showFlash("⚠️ Invalid bonus range. Defaulting to 5.", "warning");
-  }
-  SETTINGS.BONUS_TOTAL = bonusTotal;
-
-  let bonusCount = parseInt(elements.bonusCountInput.value, 10);
-  if (isNaN(bonusCount) || bonusCount < 0) {
-    bonusCount = 1;
-    elements.bonusCountInput.value = 1;
-    showFlash("⚠️ Invalid bonus count. Defaulting to 1.", "warning");
-  } else if (bonusCount > bonusTotal) {
-    bonusCount = bonusTotal;
-    elements.bonusCountInput.value = bonusTotal;
-    showFlash(`⚠️ Too many bonus numbers requested. Limited to ${bonusTotal}.`, "warning");
-  }
-  SETTINGS.BONUS_COUNT = bonusCount;
-
-  // Configure odd/even ratio
-  SETTINGS.ODD_COUNT = Math.floor(mainCount / 2);
-  SETTINGS.EVEN_COUNT = mainCount - SETTINGS.ODD_COUNT;
-
-  // Consecutive limit check
   const maxAvoidable = Math.floor((SETTINGS.MAIN_TOTAL + 1) / 2);
-  if (mainCount > maxAvoidable) {
+  if (SETTINGS.MAIN_COUNT > maxAvoidable) {
     elements.noConsecutiveCheckbox.checked = false;
     showFlash("ℹ️ Too many numbers to avoid consecutives — allowing consecutive numbers.");
   } else {
     elements.noConsecutiveCheckbox.disabled = false;
   }
+}
+
+/**
+ * Parses and validates a number input element.
+ * If the input is invalid (NaN, too low, or too high), it resets the value
+ * and shows a warning flash message.
+ *
+ * @param {HTMLElement} inputEl - The <input> element to validate.
+ * @param {number} defaultValue - Fallback to use if input is invalid.
+ * @param {number} min - Minimum acceptable value (default: 1).
+ * @param {number} max - Maximum acceptable value (default: Infinity).
+ * @param {string} label - Label used in flash message.
+ * @returns {number} - A valid number after validation.
+ */
+function parseAndValidateInput(inputEl, defaultValue, min = 1, max = Infinity, label = "value") {
+  // Convert string to integer using base 10 (decimal)
+  let value = parseInt(inputEl.value, 10);
+
+  if (isNaN(value) || value < min) {
+    // If input is not a number or too small
+    value = defaultValue;
+    inputEl.value = defaultValue;
+    showFlash(`⚠️ Invalid ${label}. Defaulting to ${defaultValue}.`, "warning");
+  } else if (value > max) {
+    // If input is too large
+    value = max;
+    inputEl.value = max;
+    showFlash(`⚠️ Too many ${label}. Limited to ${max}.`, "warning");
+  }
+
+  return value;
 }
 
 // =========================
@@ -216,5 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   elements.generateButton.addEventListener("click", generate);
+  elements.resetButton.addEventListener("click", resetFormToDefaults);
+
   generate();
 });
