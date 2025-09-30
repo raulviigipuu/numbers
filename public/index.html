@@ -57,35 +57,38 @@
   <main>
     <div class="container">
       <form id="numbersForm">
-        
-<table class="form-table">
-  <tbody>
-    <tr>
-      <td><label for="mainTotalInput">🔢 Main number range (max):</label></td>
-      <td><input type="number" id="mainTotalInput" min="1" value="48"></td>
-    </tr>
-    <tr>
-      <td><label for="mainCountInput">🎲 How many numbers to generate:</label></td>
-      <td><input type="number" id="mainCountInput" min="1" value="6"></td>
-    </tr>
-    <tr>
-      <td><label for="enforceOddEvenCheckbox">♻️ Enforce odd/even balance <span class="hint">(main numbers only)</span>:</label></td>
-      <td><input type="checkbox" id="enforceOddEvenCheckbox" checked title="Applies only to main numbers"></td>
-    </tr>
-    <tr>
-      <td><label for="noConsecutiveNumbersCheckbox">🚫 No consecutive numbers <span class="hint">(main numbers only)</span>:</label></td>
-      <td><input type="checkbox" id="noConsecutiveNumbersCheckbox" checked title="Applies only to main numbers"></td>
-    </tr>
-    <tr>
-      <td><label for="bonusTotalInput">🔢 Bonus number range (max):</label></td>
-      <td><input type="number" id="bonusTotalInput" min="1" value="5"></td>
-    </tr>
-    <tr>
-      <td><label for="bonusCountInput">🎁 How many bonus numbers:</label></td>
-      <td><input type="number" id="bonusCountInput" min="0" max="5" value="1"></td>
-    </tr>
-  </tbody>
-</table>
+
+        <table class="form-table">
+          <tbody>
+            <tr>
+              <td><label for="mainTotalInput">🔢 Main number range (max):</label></td>
+              <td><input type="number" id="mainTotalInput" min="1" value="48"></td>
+            </tr>
+            <tr>
+              <td><label for="mainCountInput">🎲 How many numbers to generate:</label></td>
+              <td><input type="number" id="mainCountInput" min="1" value="6"></td>
+            </tr>
+            <tr>
+              <td><label for="enforceOddEvenCheckbox">♻️ Enforce odd/even balance <span class="hint">(main numbers
+                    only)</span>:</label></td>
+              <td><input type="checkbox" id="enforceOddEvenCheckbox" checked title="Applies only to main numbers"></td>
+            </tr>
+            <tr>
+              <td><label for="noConsecutiveNumbersCheckbox">🚫 No consecutive numbers <span class="hint">(main numbers
+                    only)</span>:</label></td>
+              <td><input type="checkbox" id="noConsecutiveNumbersCheckbox" checked title="Applies only to main numbers">
+              </td>
+            </tr>
+            <tr>
+              <td><label for="bonusTotalInput">🔢 Bonus number range (max):</label></td>
+              <td><input type="number" id="bonusTotalInput" min="1" value="5"></td>
+            </tr>
+            <tr>
+              <td><label for="bonusCountInput">🎁 How many bonus numbers:</label></td>
+              <td><input type="number" id="bonusCountInput" min="0" max="5" value="1"></td>
+            </tr>
+          </tbody>
+        </table>
 
         <div id="flashContainer" class="flash-container"></div>
         <p id="settingsSummary" class="settings-summary"></p>
@@ -100,6 +103,7 @@
   <footer>
     This website does not use cookies 🍪
   </footer>
+  <script data-goatcounter="https://stats.nonzero.ee/count" async src="//stats.nonzero.ee/count.js"></script>
 </body>
 
 </html>
