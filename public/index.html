@@ -103,6 +103,14 @@
   <footer>
     This website does not use cookies 🍪
   </footer>
+  <script>
+    // Put domain into the recorded path so each site stays separable
+    window.goatcounter = {
+      path: function (p) {
+        return location.host + location.pathname;
+      }
+    };
+  </script>
   <script data-goatcounter="https://stats.nonzero.ee/count" async src="https://stats.nonzero.ee/count.js"></script>
 </body>
 
